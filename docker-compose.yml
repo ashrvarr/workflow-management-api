@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:15
+    container_name: workflow_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: workflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: workflow_app
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/workflow
+    ports:
+      - "8000:8000"
+
+volumes:
+  pgdata:
